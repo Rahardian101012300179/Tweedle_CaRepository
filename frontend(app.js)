@@ -1,0 +1,92 @@
+const student2Id = document.getElementById('student2_id').value;
+const student2Class = document.getElementById('student2_class').value;
+
+// Data Student 3
+const student3Name = document.getElementById('student3_name').value;
+const student3Id = document.getElementById('student3_id').value;
+const student3Class = document.getElementById('student3_class').value;
+
+// Data Student 4
+const student4Name = document.getElementById('student4_name').value;
+const student4Id = document.getElementById('student4_id').value;
+const student4Class = document.getElementById('student4_class').value;
+
+// Membuat objek data sesuai format yang diharapkan server
+const newGroup = {
+    group_name: groupName,
+    student1: {
+        student_name: student1Name,
+        student_id: student1Id,
+        student_class: student1Class
+    },
+    student2: {
+        student_name: student2Name,
+        student_id: student2Id,
+        student_class: student2Class
+    },
+    student3: {
+        student_name: student3Name,
+        student_id: student3Id,
+        student_class: student3Class
+    },
+    student4: {
+        student_name: student4Name,
+        student_id: student4Id,
+        student_class: student4Class
+    }
+};
+
+try {
+    const response = await fetch('http://localhost:3000/groups', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newGroup)
+    });
+
+    if (response.ok) {
+        const result = await response.json();
+        console.log('Group added successfully:', result);
+        alert('Group added successfully!');
+        // Reset form
+        document.getElementById('addGroupForm').reset();
+        // Refresh daftar grup
+        getAllGroups();
+    } else {
+        const error = await response.json();
+        alert('Error adding group: ' + error.error);
+    }
+} catch (error) {
+    console.error('Error:', error);
+    alert('Error adding group. Please try again.');
+}
+});
+
+// Fungsi untuk mendapatkan dan menampilkan semua grup
+async function getAllGroups() {
+try {
+    const response = await fetch('http://localhost:3000/groups');
+    const groups = await response.json();
+
+    const groupsDisplay = document.getElementById('groupsDisplay');
+    groupsDisplay.innerHTML = '<h2>All Groups:</h2>';
+
+    groups.forEach(group => {
+        groupsDisplay.innerHTML += `
+            <div class="group-card">
+                <h3>${group.group_name}</h3>
+                <div class="student-info">
+                    <p>Student 1: ${group.student1.student_name} (ID: ${group.student1.student_id}, Class: ${group.student1.student_class})</p>
+                    <p>Student 2: ${group.student2.student_name} (ID: ${group.student2.student_id}, Class: ${group.student2.student_class})</p>
+                    <p>Student 3: ${group.student3.student_name} (ID: ${group.student3.student_id}, Class: ${group.student3.student_class})</p>
+                    <p>Student 4: ${group.student4.student_name} (ID: ${group.student4.student_id}, Class: ${group.student4.student_class})</p>
+                </div>
+            </div>
+        `;
+    });
+} catch (error) {
+    console.error('Error fetching groups:', error);
+    alert('Error fetching groups. Please try again.');
+}
+}
