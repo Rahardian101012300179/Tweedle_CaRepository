@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harry Potter Character Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>Harry Potter Characters</h1>
+        <nav>
+            <a>Selamat datang Tweedle!</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <h1>Selamat Datang di Dunia Sihir</h1>
+        <p>Pilih karakter favorit Anda dan pelajari lebih lanjut tentang mereka.</p>
+    </section>
+
+    <!-- Character Section -->
+    <section class="character-container" id="characters">
+        <h2>Karakter</h2>
+        <div class="character-buttons" id="character-buttons">
+            <!-- Buttons akan dimuat secara dinamis -->
+        </div>
+        <div class="character-details" id="character-details">
+            <p>Klik tombol di atas untuk melihat detail karakter.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Dunia Sihir. All Rights Reserved.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        const apiURL = "https://potterapi-fedeperin.vercel.app/en/characters";
+    
+        // Function to fetch characters from API and display 6 characters
+        async function fetchAndDisplayCharacters() {
+            try {
+                const response = await fetch(apiURL);
+                const data = await response.json();
+    
+                // Select first 6 characters
+                const charactersToShow = data.slice(0, 6);
+    
+                // Update character buttons dynamically
+                const characterButtonsContainer = document.querySelector('.character-buttons');
+                characterButtonsContainer.innerHTML = ''; // Clear existing buttons
+    
+                charactersToShow.forEach(character => {
+                    const button = document.createElement('button');
+                    button.classList.add('character-button');
+                    button.innerHTML = `
+                        <img src="${character.image}" alt="${character.nickname}">
+                        ${character.nickname}
+                    `;
+                    button.onclick = () => showCharacterDetails(character);
+                    characterButtonsContainer.appendChild(button);
+                });
+    
+            } catch (error) {
+                console.error("Error fetching characters:", error);
+                document.getElementById('character-details').innerText = 
+                    "Unable to load character data. Please try again later.";
+            }
+        }
+    
+        // Function to display character details
+        function showCharacterDetails(character) {
+            const detailsContainer = document.getElementById('character-details');
+            detailsContainer.innerHTML = `
+                <h3>${character.fullName}</h3>
+                <img src="${character.image}" alt="${character.fullName}">
+                <p><strong>House:</strong> ${character.hogwartsHouse}</p>
+                <p><strong>Played by:</strong> ${character.interpretedBy || "Unknown"}</p>
+                <p><strong>Children:</strong> ${character.children.length > 0 ? character.children.join(", ") : "None"}</p>
+                <p><strong>Birthdate:</strong> ${character.birthdate || "Unknown"}</p>
+            `;
+        }
+    
+        // Fetch and display characters on page load
+        window.onload = fetchAndDisplayCharacters;
+    </script>
+    <script>
+
+        // Fungsi untuk menampilkan detail karakter
+        function showCharacter(character) {
+            const detailsContainer = document.getElementById('character-details');
+            detailsContainer.innerHTML = `
+                <h3>${character.fullName}</h3>
+                <p><strong>Nickname:</strong> ${character.nickname || "N/A"}</p>
+                <p><strong>Hogwarts House:</strong> ${character.hogwartsHouse || "Unknown"}</p>
+                <p><strong>Interpreted by:</strong> ${character.interpretedBy || "Unknown"}</p>
+                <p><strong>Children:</strong> ${character.children.length > 0 ? character.children.join(", ") : "None"}</p>
+                <p><strong>Birthdate:</strong> ${character.birthdate || "Unknown"}</p>
+                <img src="${character.image}" alt="${character.fullName}">
+            `;
+        }
+
+        // Muat data karakter saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadCharacters);
+    </script>
+
+<!-- HTML untuk Group Management -->
+<div class="group-management">
+    <h1>Group Management</h1>
+
+    <div id="groupsDisplay"></div> <!-- Container untuk menampilkan data grup -->
+
+    <script src="app.js"></script>
+    
+    <div class="group-form-container">
+        <h2>Add a New Group</h2>
+        <form id="addGroupForm" class="group-form">
+            <input type="text" id="group_name" placeholder="Group Name" required>
+            
+            <!-- Student 1 -->
+            <div class="student-section">
+                <h3>Student 1</h3>
+                <input type="text" id="student1_name" placeholder="Student 1 Name" required>
+                <input type="text" id="student1_id" placeholder="Student 1 ID" required>
+                <input type="text" id="student1_class" placeholder="Student 1 Class" required>
+            </div>
+            
+            <!-- Student 2 -->
+            <div class="student-section">
+                <h3>Student 2</h3>
+                <input type="text" id="student2_name" placeholder="Student 2 Name">
+                <input type="text" id="student2_id" placeholder="Student 2 ID">
+                <input type="text" id="student2_class" placeholder="Student 2 Class">
+            </div>
+
+            <!-- Student 3 -->
+            <div class="student-section">
+                <h3>Student 3</h3>
+                <input type="text" id="student3_name" placeholder="Student 3 Name">
+                <input type="text" id="student3_id" placeholder="Student 3 ID">
+                <input type="text" id="student3_class" placeholder="Student 3 Class">
+            </div>
+
+            <!-- Student 4 -->
+            <div class="student-section">
+                <h3>Student 4</h3>
+                <input type="text" id="student4_name" placeholder="Student 4 Name">
+                <input type="text" id="student4_id" placeholder="Student 4 ID">
+                <input type="text" id="student4_class" placeholder="Student 4 Class">
+            </div>
+            
+            <button type="submit">Add Group</button>
+        </form>
+    </div>
+
+    <!-- Display Groups -->
+    <div id="groupsDisplay"></div>
+</div>
+
+<script>
+    const apiBaseURL = "http://localhost:3000/groups"; // URL server API kamu
+
+    // Fungsi untuk menampilkan grup yang ada
+    async function loadGroups() {
+        try {
+            const response = await fetch(apiBaseURL);
+            const groups = await response.json();
+            displayGroups(groups);
+        } catch (error) {
+            console.error("Error loading groups:", error);
+        }
+    }
+
+    // Fungsi untuk menampilkan grup dalam HTML
+    function displayGroups(groups) {
+        const groupsDisplay = document.getElementById('groupsDisplay');
+        groupsDisplay.innerHTML = ''; // Bersihkan tampilan sebelumnya
+
+        groups.forEach(group => {
+            const groupDiv = document.createElement('div');
+            groupDiv.classList.add('group-item');
+            groupDiv.innerHTML = `
+                <h3>${group.group_name}</h3>
+                <p><strong>Student 1:</strong> ${group.student1.student_name} (${group.student1.student_id}) - ${group.student1.student_class}</p>
+                <p><strong>Student 2:</strong> ${group.student2 ? `${group.student2.student_name} (${group.student2.student_id}) - ${group.student2.student_class}` : 'None'}</p>
+                <p><strong>Student 3:</strong> ${group.student3 ? `${group.student3.student_name} (${group.student3.student_id}) - ${group.student3.student_class}` : 'None'}</p>
+                <p><strong>Student 4:</strong> ${group.student4 ? `${group.student4.student_name} (${group.student4.student_id}) - ${group.student4.student_class}` : 'None'}</p>
+                <button onclick="editGroup('${group.group_name}')">Edit</button>
+                <button onclick="deleteGroup('${group.group_name}')">Delete</button>
+            `;
+            groupsDisplay.appendChild(groupDiv);
+        });
+    }
+
+    // Fungsi untuk menambahkan grup baru
+    document.getElementById('addGroupForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const group_name = document.getElementById('group_name').value;
+        const student1 = {
+            student_name: document.getElementById('student1_name').value,
+            student_id: document.getElementById('student1_id').value,
+            student_class: document.getElementById('student1_class').value,
+        };
+        const student2 = {
+            student_name: document.getElementById('student2_name').value,
+            student_id: document.getElementById('student2_id').value,
+            student_class: document.getElementById('student2_class').value,
+        };
+        const student3 = {
+            student_name: document.getElementById('student3_name').value,
+            student_id: document.getElementById('student3_id').value,
+            student_class: document.getElementById('student3_class').value,
+        };
+        const student4 = {
+            student_name: document.getElementById('student4_name').value,
+            student_id: document.getElementById('student4_id').value,
+            student_class: document.getElementById('student4_class').value,
+        };
+
+        const newGroup = { group_name, student1, student2, student3, student4 };
+
+        try {
+            await fetch(apiBaseURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newGroup),
+            });
+            loadGroups(); // Muat ulang daftar grup
+        } catch (error) {
+            console.error("Error adding group:", error);
+        }
+    });
+
+    // Fungsi untuk menghapus grup
+    async function deleteGroup(groupName) {
+        try {
+            await fetch(`${apiBaseURL}/${groupName}`, {
+                method: 'DELETE',
+            });
+            loadGroups(); // Muat ulang daftar grup
+        } catch (error) {
+            console.error("Error deleting group:", error);
+        }
+    }
+
+    // Fungsi untuk mengedit grup (Placeholder, bisa ditambahkan form atau modal untuk edit)
+    function editGroup(groupName) {
+        alert(`Fitur edit untuk grup "${groupName}" belum diimplementasikan.`);
+        // Implementasi edit dapat menggunakan modal atau form input khusus
+    }
+
+    // Muat grup saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', loadGroups);
+</script>
